@@ -100,13 +100,13 @@ body.light .bg-layer {
   filter: brightness(0.95) saturate(0.90);
 }
 
-/* Fondos Wallhaven: imagen completa sin desenfoque */
+/* Fondos Wallhaven: desenfoque moderado para legibilidad del contador */
 .bg-layer.bg-blur {
-  filter: none;
+  filter: blur(6px) brightness(0.60) saturate(1.10);
 }
 
 body.light .bg-layer.bg-blur {
-  filter: none;
+  filter: blur(6px) brightness(0.85) saturate(1.05);
 }
 
 .bg-mouse {
