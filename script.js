@@ -180,6 +180,35 @@ const backgrounds = [
     gradient:
       "radial-gradient(900px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(236, 72, 153, 0.10), transparent 45%)",
   },
+  // Fondos Wallhaven (con desenfoque/frosted glass)
+  {
+    id: "bg-wallhaven-1",
+    name: "Noche Estrellada",
+    image: "assets/backgrounds/bg-wallhaven-1.png",
+    gradient: "none",
+    blur: true,
+  },
+  {
+    id: "bg-wallhaven-2",
+    name: "Aurora",
+    image: "assets/backgrounds/bg-wallhaven-2.png",
+    gradient: "none",
+    blur: true,
+  },
+  {
+    id: "bg-wallhaven-3",
+    name: "Bosque Nocturno",
+    image: "assets/backgrounds/bg-wallhaven-3.png",
+    gradient: "none",
+    blur: true,
+  },
+  {
+    id: "bg-wallhaven-4",
+    name: "Ciudad Futurista",
+    image: "assets/backgrounds/bg-wallhaven-4.png",
+    gradient: "none",
+    blur: true,
+  },
 ];
 
 let currentBgIndex = 0;
@@ -201,9 +230,20 @@ function selectBackground(index) {
   const bg = backgrounds[index];
 
   if (bg.image) {
-    bgLayer.style.backgroundImage = `url(${bg.image}), ${bg.gradient}`;
+    if (bg.gradient && bg.gradient !== "none") {
+      bgLayer.style.backgroundImage = `url(${bg.image}), ${bg.gradient}`;
+    } else {
+      bgLayer.style.backgroundImage = `url(${bg.image})`;
+    }
   } else {
     bgLayer.style.backgroundImage = bg.gradient;
+  }
+
+  // Aplicar/quitar efecto de desenfoque (frosted glass)
+  if (bg.blur) {
+    bgLayer.classList.add("bg-blur");
+  } else {
+    bgLayer.classList.remove("bg-blur");
   }
 
   localStorage.setItem("reloj_bg", index);
