@@ -266,7 +266,7 @@ const SOUNDS = {
 function formatTimer(seconds) {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
-  return `${pad(m)}:${pad(s)}";
+  return `${pad(m)}:${pad(s)}`;
 }
 
 function updateTimerDisplay() {
@@ -387,3 +387,4 @@ const hero = document.querySelector(".hero");
 if (hero) {
   hero.setAttribute("data-enter", "");
 }
+;
