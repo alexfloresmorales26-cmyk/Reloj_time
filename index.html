@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reloj Digital | Reloj_time</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 class="logo">Reloj_time</h1>
+      <p class="tagline">Tu hora, con estilo</p>
+    </header>
+
+    <main class="clock-card">
+      <div class="clock-wrapper">
+        <div class="time" id="time">00:00:00</div>
+        <div class="period" id="period">AM</div>
+        <div class="date" id="date">Lunes, 1 de enero de 2026</div>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-primary" id="toggle12">
+          <span class="btn-icon">🕒</span>
+          <span class="btn-label">Formato 12/24h</span>
+        </button>
+        <button class="btn btn-secondary" id="toggleTheme">
+          <span class="btn-icon">🌙</span>
+          <span class="btn-label">Modo oscuro</span>
+        </button>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2026 Reloj_time. Construido con ❤️</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
