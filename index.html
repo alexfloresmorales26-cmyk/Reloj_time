@@ -8,6 +8,7 @@
   <meta name="description" content="Reloj digital con temporizador de sesión, fondos nocturnos y modo oscuro. Tu hora, con estilo." />
   <title>Reloj Digital | Reloj_time</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:," />
 </head>
 <body>
   <a href="#main" class="skip-link">Saltar al contenido</a>
@@ -78,13 +79,13 @@
       </p>
 
       <div class="bottom">
-        <button class="icon-btn" id="toggleTheme" title="Modo claro/oscuro" aria-pressed="false">
+        <button class="icon-btn" id="toggleTheme" title="Modo claro/oscuro" aria-label="Cambiar tema claro/oscuro" aria-pressed="false">
           🌙
         </button>
-        <button class="icon-btn" id="toggle12" title="Formato 12/24 horas" aria-pressed="false">
+        <button class="icon-btn" id="toggle12" title="Formato 12/24 horas" aria-label="Cambiar formato 12 o 24 horas" aria-pressed="false">
           🕒
         </button>
-        <button class="icon-btn" id="toggleBg" title="Cambiar fondo" aria-expanded="false">
+        <button class="icon-btn" id="toggleBg" title="Cambiar fondo" aria-label="Cambiar fondo" aria-expanded="false">
           <span class="bg-preview" id="bgPreview"></span>
           <span class="bg-icon">🖼️</span>
         </button>
@@ -100,7 +101,7 @@
     <div class="selector-panel">
       <div class="selector-head">
         <h3 class="selector-title">Fondo</h3>
-        <button class="icon-btn close-selector" id="closeBg" title="Cerrar">✕</button>
+        <button class="icon-btn close-selector" id="closeBg" title="Cerrar" aria-label="Cerrar selector de fondos">✕</button>
       </div>
       <div class="bg-options" id="bgOptions"></div>
     </div>
