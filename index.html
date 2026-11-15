@@ -1,52 +1,59 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-type="software" data-radius="soft" data-buttons="solid|pill" data-motion>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="page-type" content="software" />
+  <meta name="site-kind" content="software" />
+  <meta name="description" content="Reloj digital con temporizador de sesión, fondos nocturnos y modo oscuro. Tu hora, con estilo." />
   <title>Reloj Digital | Reloj_time</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Fondo nocturno urbano -->
-  <div class="bg-layer" id="bgLayer"></div>
-  <div class="bg-overlay"></div>
+  <a href="#main" class="skip-link">Saltar al contenido</a>
 
-  <div class="container">
+  <div class="bg-layer" id="bgLayer"></div>
+  <div class="bg-mouse" id="bgMouse"></div>
+
+  <div class="wrap">
     <header class="header">
-      <div class="logo">Reloj_time</div>
-      <div class="date" id="date">Lunes, 1 de enero de 2026</div>
+      <div class="brand">
+        <span class="mark">Reloj_time</span>
+      </div>
+      <time class="date" id="date">Lunes, 1 de enero de 2026</time>
     </header>
 
-    <main class="clock-card">
-      <!-- Temporizador principal (estilo Pomodoro) -->
-      <div class="timer-circle">
+    <main id="main" class="clock-section">
+      <div class="hero">
+        <div class="timer-ring"></div>
+        <div class="timer-ring-inner"></div>
         <div class="time" id="time">00:00:00</div>
         <div class="period" id="period">AM</div>
-        <div class="timer-label" id="timerLabel">Sesión de Reloj</div>
+        <p class="session" id="session">Sesión de Reloj</p>
       </div>
 
-      <div class="timer-controls">
-        <button class="btn btn-secondary" id="startTimer">
+      <div class="controls">
+        <button class="btn btn-primary" id="startTimer">
           <span class="btn-icon">▶️</span>
           <span class="btn-label">Iniciar sesión</span>
         </button>
-        <button class="btn btn-secondary" id="pauseTimer">
+        <button class="btn btn-outline" id="pauseTimer">
           <span class="btn-icon">⏸️</span>
           <span class="btn-label">Pausar</span>
         </button>
-        <button class="btn btn-secondary" id="resetTimer">
+        <button class="btn btn-outline" id="resetTimer">
           <span class="btn-icon">🔄</span>
           <span class="btn-label">Reiniciar</span>
         </button>
       </div>
 
-      <div class="timer-settings">
+      <div class="settings">
         <label class="setting">
-          <span>Minutos</span>
+          <span class="setting-label">Minutos</span>
           <input type="number" id="timerMinutes" min="1" max="120" value="25" />
         </label>
         <label class="setting">
-          <span>Sonido</span>
+          <span class="setting-label">Sonido al terminar</span>
           <select id="soundSelect">
             <option value="none">Ninguno</option>
             <option value="ding">Ding</option>
@@ -56,29 +63,33 @@
         </label>
       </div>
 
-      <div class="motivational-quote" id="quote">
+      <p class="quote" id="quote">
         «La motivación te pone en marcha; el hábito te mantiene en marcha.»
-      </div>
+      </p>
 
-      <!-- Controles inferiores -->
-      <div class="bottom-controls">
-        <button class="btn-icon-only" id="toggleTheme" title="Modo claro/oscuro">
+      <div class="bottom">
+        <button class="icon-btn" id="toggleTheme" title="Modo claro/oscuro" aria-pressed="false">
           🌙
         </button>
-        <button class="btn-icon-only" id="toggle12" title="Formato 12/24h">
+        <button class="icon-btn" id="toggle12" title="Formato 12/24 horas" aria-pressed="false">
           🕒
         </button>
-        <button class="btn-icon-only" id="toggleBg" title="Cambiar fondo">
+        <button class="icon-btn" id="toggleBg" title="Cambiar fondo" aria-expanded="false">
           🖼️
         </button>
       </div>
     </main>
 
-    <!-- Selector de fondos -->
-    <div class="bg-selector" id="bgSelector">
-      <div class="selector-header">
-        <span>Fondo</span>
-        <button class="close-selector" id="closeBg">✕</button>
+    <footer class="footer">
+      <p>&copy; 2026 Reloj_time. Construido con cuidado.</p>
+    </footer>
+  </div>
+
+  <div class="bg-selector" id="bgSelector" hidden>
+    <div class="selector-panel">
+      <div class="selector-head">
+        <h3 class="selector-title">Fondo</h3>
+        <button class="icon-btn close-selector" id="closeBg" title="Cerrar">✕</button>
       </div>
       <div class="bg-options" id="bgOptions"></div>
     </div>

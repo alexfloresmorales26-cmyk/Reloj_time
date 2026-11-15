@@ -1,8 +1,8 @@
 /* ========================================
    Reloj Digital - Reloj_time
-   Estilo Pomodoro Timer
+   Lógica funcional:
    - Reloj en tiempo real (12/24h)
-   - Temporizador de sesión con sonido
+   - Temporizador de sesión con sonido al terminar
    - Fondos traseros dinámicos
    - Modo claro/oscuro con persistencia
    ======================================== */
@@ -11,7 +11,7 @@
 const timeEl = document.getElementById("time");
 const periodEl = document.getElementById("period");
 const dateEl = document.getElementById("date");
-const timerLabelEl = document.getElementById("timerLabel");
+const sessionEl = document.getElementById("session");
 
 // Controles principales
 const toggleThemeBtn = document.getElementById("toggleTheme");
@@ -19,7 +19,6 @@ const toggle12Btn = document.getElementById("toggle12");
 const toggleBgBtn = document.getElementById("toggleBg");
 
 // Temporizador
-const timerDisplay = document.getElementById("timerDisplay") || timeEl;
 const startTimerBtn = document.getElementById("startTimer");
 const pauseTimerBtn = document.getElementById("pauseTimer");
 const resetTimerBtn = document.getElementById("resetTimer");
@@ -99,11 +98,13 @@ function applyTheme(dark) {
     document.body.classList.add("dark");
     toggleThemeBtn.textContent = "☀️";
     toggleThemeBtn.title = "Modo claro";
+    toggleThemeBtn.setAttribute("aria-pressed", "true");
   } else {
     document.body.classList.remove("dark");
     document.body.classList.add("light");
     toggleThemeBtn.textContent = "🌙";
     toggleThemeBtn.title = "Modo oscuro";
+    toggleThemeBtn.setAttribute("aria-pressed", "false");
   }
   localStorage.setItem("reloj_theme", dark ? "dark" : "light");
 }
@@ -206,7 +207,8 @@ function selectBackground(index) {
 
 function toggleBgSelector(open) {
   isBgOpen = open;
-  bgSelector.style.display = open ? "flex" : "none";
+  bgSelector.hidden = !open;
+  toggleBgBtn.setAttribute("aria-expanded", String(open));
 }
 
 toggleBgBtn.addEventListener("click", () => {
@@ -269,7 +271,7 @@ function formatTimer(seconds) {
 }
 
 function updateTimerDisplay() {
-  timerDisplay.textContent = formatTimer(timerSeconds);
+  timeEl.textContent = formatTimer(timerSeconds);
 }
 
 function playSound(name) {
@@ -346,8 +348,8 @@ function finishTimer() {
   playSound(selectedSound);
 
   // Efecto visual flash
-  timerDisplay.classList.add("timer-flash");
-  setTimeout(() => timerDisplay.classList.remove("timer-flash"), 500);
+  timeEl.classList.add("timer-flash");
+  setTimeout(() => timeEl.classList.remove("timer-flash"), 500);
 
   // Notificación del navegador
   try {
@@ -378,3 +380,11 @@ timerMinutesInput.addEventListener("change", () => {
 
 // Inicializar temporizador
 resetTimer();
+
+// ==========================================
+// ENTRADA DEL HERO UNA VEZ (design-taste-frontend rule 5)
+// ==========================================
+const hero = document.querySelector(".hero");
+if (hero) {
+  hero.setAttribute("data-enter", "");
+}

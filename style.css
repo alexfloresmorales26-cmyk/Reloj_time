@@ -1,39 +1,64 @@
 /* ========================================
    Reloj Digital - Reloj_time
-   Estilo inspirado en Pomodoro Timer
-   Círculo luminoso, fondo nocturno, números grandes
+   Reconstruido con principios de craft:
+   - Emil Kowalski: easing propio, :active scale, transición por propiedad,
+     blur en transiciones, solo transform/opacity, prefers-reduced-motion
+   - Impeccable: una sección, bordes iguales, copy real, accesibilidad
+   - design-taste-frontend: estilo empresa profesional, hero entra una vez,
+     hover micro-animaciones, nada de tilt ni carousel
    ======================================== */
 
+/* ---------- Tokens ---------- */
 :root {
+  /* Colores modo oscuro (defecto) */
   --bg-color: #0a0b14;
-  --card-bg: rgba(15, 18, 28, 0.6);
+  --card-bg: rgba(15, 18, 28, 0.55);
   --text-color: #ffffff;
-  --text-muted: #a0a8b8;
+  --text-muted: #9aa3b8;
   --accent: #c084fc;
-  --accent-glow: rgba(192, 132, 252, 0.5);
-  --btn-bg: rgba(255, 255, 255, 0.1);
+  --accent-glow: rgba(192, 132, 252, 0.35);
+  --btn-bg: rgba(255, 255, 255, 0.10);
   --btn-hover: rgba(255, 255, 255, 0.18);
   --border: rgba(255, 255, 255, 0.08);
-  --shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.7);
-  --transition: 0.4s ease;
+  --shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.75);
+
+  /* Easings personalizados (Emil Kowalski) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* Tiempos */
+  --t-press: 140ms;
+  --t-ui: 200ms;
+  --t-modal: 350ms;
+
   --font-main: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
+
+  /* Fondo */
+  --bg-image: none;
+  --bg-gradient: radial-gradient(
+    900px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(192, 132, 252, 0.10),
+    transparent 45%
+  );
 }
 
 body.light {
   --bg-color: #f3f4f6;
-  --card-bg: rgba(255, 255, 255, 0.7);
+  --card-bg: rgba(255, 255, 255, 0.70);
   --text-color: #0f172a;
   --text-muted: #64748b;
   --accent: #8b5cf6;
-  --accent-glow: rgba(139, 92, 246, 0.3);
+  --accent-glow: rgba(139, 92, 246, 0.30);
   --btn-bg: rgba(0, 0, 0, 0.06);
   --btn-hover: rgba(0, 0, 0, 0.12);
   --border: rgba(0, 0, 0, 0.08);
-  --shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.1);
+  --shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.10);
 }
 
+/* ---------- Base ---------- */
 * {
   margin: 0;
   padding: 0;
@@ -52,11 +77,12 @@ body {
   font-family: var(--font-main);
   background: var(--bg-color);
   color: var(--text-color);
-  transition: background var(--transition), color var(--transition);
+  transition: background-color var(--t-ui) var(--ease-out),
+    color var(--t-ui) var(--ease-out);
   overflow-x: hidden;
 }
 
-/* Capa de fondo nocturno */
+/* ---------- Fondo nocturno y mouse ---------- */
 .bg-layer {
   position: fixed;
   inset: 0;
@@ -65,74 +91,71 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: background 0.8s ease, filter var(--transition);
-  filter: brightness(0.7) saturate(1.1);
+  transition: background-color var(--t-ui) var(--ease-out),
+    filter var(--t-ui) var(--ease-out);
+  filter: brightness(0.70) saturate(1.10);
 }
 
 body.light .bg-layer {
-  filter: brightness(0.95) saturate(0.9);
+  filter: brightness(0.95) saturate(0.90);
 }
 
-.bg-overlay {
+.bg-mouse {
   position: fixed;
   inset: 0;
   z-index: -1;
+  pointer-events: none;
   background: radial-gradient(
     900px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
     rgba(192, 132, 252, 0.10),
     transparent 45%
   );
-  transition: background 0.4s ease;
+  transition: background var(--t-ui) var(--ease-out);
 }
 
-/* Contenedor */
-.container {
+/* ---------- Contenedor y bordes iguales ---------- */
+.wrap {
   width: 100%;
   max-width: 700px;
-  padding: 40px 24px;
-  text-align: center;
+  padding: 48px 24px;
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* ---------- Header ---------- */
 .header {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  text-align: center;
 }
 
-.logo {
+.brand .mark {
   font-size: 1.75rem;
   font-weight: 700;
   letter-spacing: -0.5px;
   color: var(--text-color);
-  margin-bottom: 8px;
+  display: block;
 }
 
 .date {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
-  font-weight: 400;
+  margin-top: 8px;
 }
 
-/* Tarjeta principal */
-.clock-card {
-  position: relative;
-  background: var(--card-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--border);
-  border-radius: 40px;
-  padding: 60px 40px 50px;
-  box-shadow: var(--shadow);
-  transition: transform var(--transition), box-shadow var(--transition);
+/* ---------- Sección principal (una sola) ---------- */
+.clock-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-.clock-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 35px 90px -18px rgba(0, 0, 0, 0.8);
-}
-
-/* Círculo del temporizador (estilo Pomodoro) */
-.timer-circle {
+/* ---------- Hero: círculo luminoso ---------- */
+.hero {
   position: relative;
   width: 320px;
   height: 320px;
@@ -179,17 +202,21 @@ body.light .bg-layer {
   z-index: 2;
 }
 
-.timer-label {
+.session {
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-muted);
   margin-top: 10px;
   position: relative;
   z-index: 2;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.30);
   padding: 6px 16px;
   border-radius: 20px;
   border: 1px solid var(--border);
+}
+
+body.light .session {
+  background: rgba(0, 0, 0, 0.08);
 }
 
 @keyframes pulseRing {
@@ -205,16 +232,16 @@ body.light .bg-layer {
   }
 }
 
-/* Controles del temporizador */
-.timer-controls {
+/* ---------- Controles ---------- */
+.controls {
   display: flex;
   gap: 12px;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
 }
 
-.timer-settings {
+.settings {
   display: flex;
   gap: 18px;
   justify-content: center;
@@ -239,17 +266,18 @@ body.light .bg-layer {
   padding: 10px 14px;
   border-radius: 12px;
   border: 1px solid var(--border);
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.20);
   color: var(--text-color);
   font-family: inherit;
   font-size: 0.9rem;
   outline: none;
-  transition: border-color var(--transition), box-shadow var(--transition);
+  transition: border-color var(--t-ui) var(--ease-out),
+    box-shadow var(--t-ui) var(--ease-out);
 }
 
 body.light .setting input,
 body.light .setting select {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.60);
 }
 
 .setting input:focus,
@@ -258,7 +286,7 @@ body.light .setting select {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-/* Botones */
+/* ---------- Botones (Emil Kowalski) ---------- */
 .btn {
   position: relative;
   display: inline-flex;
@@ -272,46 +300,80 @@ body.light .setting select {
   font-weight: 600;
   color: var(--text-color);
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow var(--transition),
-    background var(--transition);
+  transition: transform var(--t-press) var(--ease-out),
+    background-color var(--t-ui) var(--ease-out),
+    border-color var(--t-ui) var(--ease-out),
+    box-shadow var(--t-ui) var(--ease-out);
   outline: none;
   background: var(--btn-bg);
   border: 1px solid var(--border);
 }
 
 .btn:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 .btn:hover {
   background: var(--btn-hover);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.20);
   box-shadow: 0 0 0 6px var(--accent-glow);
 }
 
-.btn-icon-only {
+.btn-primary {
+  background: var(--accent);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 0 0 0 var(--accent-glow);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-primary:hover {
+  background: #b56ee8;
+  box-shadow: 0 0 0 8px var(--accent-glow);
+}
+
+.icon-btn {
   width: 48px;
   height: 48px;
   padding: 0;
-  justify-content: center;
+  border-radius: 14px;
   font-size: 1.25rem;
+  background: var(--btn-bg);
+  border: 1px solid var(--border);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: transform var(--t-press) var(--ease-out),
+    background-color var(--t-ui) var(--ease-out),
+    border-color var(--t-ui) var(--ease-out);
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.btn-icon {
-  font-size: 1.1rem;
+.icon-btn:active {
+  transform: scale(0.97);
 }
 
-/* Cita motivacional */
-.motivational-quote {
+.icon-btn:hover {
+  background: var(--btn-hover);
+  border-color: rgba(255, 255, 255, 0.20);
+}
+
+/* ---------- Cita ---------- */
+.quote {
   font-size: 1.05rem;
   color: var(--text-muted);
   font-style: italic;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
   line-height: 1.6;
 }
 
-/* Controles inferiores */
-.bottom-controls {
+/* ---------- Controles inferiores ---------- */
+.bottom {
   display: flex;
   gap: 12px;
   justify-content: center;
@@ -319,21 +381,21 @@ body.light .setting select {
   border-top: 1px solid var(--border);
 }
 
-/* Selector de fondos */
+/* ---------- Selector de fondos ---------- */
 .bg-selector {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(8px);
   display: none;
   align-items: center;
   justify-content: center;
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn var(--t-modal) var(--ease-out);
 }
 
 body.light .bg-selector {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.30);
 }
 
 @keyframes fadeIn {
@@ -351,16 +413,26 @@ body.light .bg-selector {
   width: 90%;
   text-align: center;
   box-shadow: var(--shadow);
+  transform: scale(0.96);
+  opacity: 0;
+  animation: panelIn var(--t-modal) var(--ease-out) forwards;
 }
 
-.selector-header {
+@keyframes panelIn {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.selector-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
 }
 
-.selector-header span {
+.selector-title {
   font-weight: 600;
   color: var(--text-color);
   font-size: 1.1rem;
@@ -373,10 +445,19 @@ body.light .bg-selector {
   font-size: 1.25rem;
   cursor: pointer;
   line-height: 1;
+  padding: 4px;
+  border-radius: 8px;
+  transition: color var(--t-ui) var(--ease-out),
+    background-color var(--t-ui) var(--ease-out);
+}
+
+.close-selector:active {
+  transform: scale(0.97);
 }
 
 .close-selector:hover {
   color: var(--text-color);
+  background-color: rgba(255, 255, 255, 0.10);
 }
 
 .bg-options {
@@ -394,8 +475,14 @@ body.light .bg-selector {
   cursor: pointer;
   background-size: cover;
   background-position: center;
-  transition: transform 0.2s ease, border-color var(--transition);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  transition: transform var(--t-ui) var(--ease-out),
+    border-color var(--t-ui) var(--ease-out),
+    box-shadow var(--t-ui) var(--ease-out);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.40);
+}
+
+.bg-option:active {
+  transform: scale(0.97);
 }
 
 .bg-option:hover {
@@ -408,28 +495,57 @@ body.light .bg-selector {
   box-shadow: 0 0 0 6px var(--accent-glow);
 }
 
-/* Flash al terminar temporizador */
+/* ---------- Flash al terminar temporizador ---------- */
 .timer-flash {
-  animation: timerFlash 0.5s ease;
+  animation: timerFlash 0.5s var(--ease-out);
 }
 
 @keyframes timerFlash {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  50% { opacity: 0.55; }
 }
 
-/* Responsive */
+/* ---------- Footer ---------- */
+.footer {
+  margin-top: 32px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ---------- Skip link ---------- */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 16px;
+  z-index: 1000;
+  background: var(--accent);
+  color: #000;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform var(--t-ui) var(--ease-out);
+}
+
+.skip-link:focus {
+  left: 16px;
+  transform: translateY(0);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* ---------- Responsive ---------- */
 @media (max-width: 640px) {
-  .container {
-    padding: 24px 16px;
+  .wrap {
+    padding: 32px 16px;
   }
 
-  .clock-card {
-    padding: 40px 24px 32px;
+  .clock-section {
     border-radius: 28px;
   }
 
-  .timer-circle {
+  .hero {
     width: 260px;
     height: 260px;
     margin-bottom: 24px;
@@ -439,8 +555,8 @@ body.light .bg-selector {
     font-size: 3.75rem;
   }
 
-  .timer-controls,
-  .timer-settings {
+  .controls,
+  .settings {
     flex-direction: column;
     align-items: center;
   }
@@ -456,6 +572,7 @@ body.light .bg-selector {
   }
 }
 
+/* ---------- Reducción de movimiento ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -464,5 +581,29 @@ body.light .bg-selector {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .timer-ring {
+    animation: none;
+    opacity: 0.3;
+  }
+
+  .bg-mouse {
+    background: transparent;
+  }
+}
+
+/* ---------- Entrada del hero una vez (design-taste-frontend rule 5) ---------- */
+.hero {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--t-modal) var(--ease-out),
+    transform var(--t-modal) var(--ease-out);
+}
+
+.hero[data-enter] {
+  @starting-style {
+    opacity: 0;
+    transform: translateY(12px);
   }
 }
