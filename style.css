@@ -303,9 +303,11 @@ body.light .setting select {
   cursor: pointer;
   transition: transform var(--t-press) var(--ease-out),
     background-color var(--t-ui) var(--ease-out),
-    color var(--t-ui) var(--ease-out);
+    color var(--t-ui) var(--ease-out),
+    box-shadow var(--t-ui) var(--ease-out);
   outline: none;
   white-space: nowrap;
+  box-shadow: 0 0 0 0 var(--accent-glow), 0 2px 8px -2px rgba(192, 132, 252, 0.10);
 }
 
 .mode-btn:hover {
@@ -353,6 +355,7 @@ body.light .setting select {
   outline: none;
   background: var(--btn-bg);
   border: 1px solid var(--border);
+  box-shadow: 0 0 0 0 var(--accent-glow), 0 4px 12px -4px rgba(192, 132, 252, 0.15);
 }
 
 .btn:active {
@@ -362,7 +365,7 @@ body.light .setting select {
 .btn:hover {
   background: var(--btn-hover);
   border-color: rgba(255, 255, 255, 0.20);
-  box-shadow: 0 0 0 6px var(--accent-glow);
+  box-shadow: 0 0 0 6px var(--accent-glow), 0 8px 24px -4px rgba(192, 132, 252, 0.25);
 }
 
 .btn-primary {
@@ -399,6 +402,7 @@ body.light .setting select {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 0 0 0 var(--accent-glow), 0 4px 12px -4px rgba(192, 132, 252, 0.15);
 }
 
 .icon-btn:active {
