@@ -34,6 +34,7 @@ const bgLayer = document.getElementById("bgLayer");
 const bgSelector = document.getElementById("bgSelector");
 const bgOptions = document.getElementById("bgOptions");
 const closeBgBtn = document.getElementById("closeBg");
+const bgPreview = document.getElementById("bgPreview");
 
 // Estado
 let use24h = false;
@@ -257,9 +258,31 @@ function selectBackground(index) {
     bgLayer.classList.remove("bg-blur");
   }
 
+  // Actualizar preview en el botón
+  updateBgPreview(bg);
+
   localStorage.setItem("reloj_bg", index);
   renderBgOptions();
   toggleBgSelector(false);
+}
+
+function updateBgPreview(bg) {
+  if (!bgPreview) return;
+  
+  if (bg.image) {
+    bgPreview.style.backgroundImage = `url(${bg.image})`;
+    bgPreview.style.backgroundSize = "cover";
+    bgPreview.style.backgroundPosition = "center";
+  } else {
+    bgPreview.style.backgroundImage = bg.gradient;
+  }
+  
+  // Indicar si tiene blur con un pequeño borde interno
+  if (bg.blur) {
+    bgPreview.classList.add("has-blur");
+  } else {
+    bgPreview.classList.remove("has-blur");
+  }
 }
 
 function toggleBgSelector(open) {

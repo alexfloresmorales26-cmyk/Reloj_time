@@ -503,6 +503,34 @@ body.light .setting select {
   box-shadow: 0 0 0 6px var(--accent-glow);
 }
 
+/* Preview de fondo en el botón */
+.icon-btn .bg-preview {
+  position: absolute;
+  inset: 2px;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity var(--t-ui) var(--ease-out);
+}
+
+.icon-btn .bg-preview.has-blur::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  pointer-events: none;
+}
+
+.icon-btn .bg-icon {
+  position: relative;
+  z-index: 1;
+}
+
 /* ---------- Selector de fondos ---------- */
 .bg-selector {
   position: fixed;
