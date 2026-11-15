@@ -1,0 +1,420 @@
+/* ========================================
+   Reloj Digital - Reloj_time
+   Estilo inspirado en pomodorotimer.online
+   Fondos traseros dinámicos + temporizador de sesión + sonido
+   ======================================== */
+
+:root {
+  /* Colores por defecto (modo oscuro) */
+  --bg-color: #0f172a;
+  --card-bg: rgba(30, 41, 59, 0.55);
+  --text-color: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent: #38bdf8;
+  --accent-hover: #0ea5e9;
+  --accent-glow: rgba(56, 189, 248, 0.35);
+  --btn-text: #ffffff;
+  --border: rgba(255, 255, 255, 0.08);
+  --shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
+  --transition: 0.35s ease;
+  --font-main: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+
+  /* Fondos traseros (se sobrescriben por JS) */
+  --bg-gradient: radial-gradient(
+    800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(56, 189, 248, 0.12),
+    transparent 40%
+  );
+  --bg-image: none;
+}
+
+/* ===== Modo claro ===== */
+body.light {
+  --bg-color: #f1f5f9;
+  --card-bg: rgba(255, 255, 255, 0.65);
+  --text-color: #0f172a;
+  --text-muted: #64748b;
+  --accent: #0ea5e9;
+  --accent-hover: #0284c7;
+  --accent-glow: rgba(14, 165, 233, 0.25);
+  --btn-text: #ffffff;
+  --border: rgba(255, 255, 255, 0.5);
+  --shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== Base ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-main);
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: background var(--transition), color var(--transition);
+  overflow-x: hidden;
+}
+
+/* Capa de fondo dinámico (imagen + gradiente) */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: var(--bg-image), var(--bg-gradient);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background 0.6s ease, filter var(--transition);
+  filter: brightness(0.9) saturate(1.1);
+}
+
+body.light .bg-layer {
+  filter: brightness(1.05) saturate(0.95);
+}
+
+/* ===== Contenedor ===== */
+.container {
+  width: 100%;
+  max-width: 440px;
+  padding: 24px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  margin-bottom: 36px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-color);
+  margin-bottom: 6px;
+}
+
+.tagline {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* ===== Tarjeta principal ===== */
+.clock-card {
+  position: relative;
+  background: var(--card-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 40px 28px 36px;
+  box-shadow: var(--shadow);
+  transition: transform var(--transition), box-shadow var(--transition),
+    border-color var(--transition);
+}
+
+.clock-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 28px 70px -14px rgba(0, 0, 0, 0.65);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* ===== Reloj ===== */
+.clock-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 36px;
+}
+
+.time {
+  font-family: var(--font-mono);
+  font-size: 5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-color);
+  text-shadow: 0 0 28px var(--accent-glow);
+  letter-spacing: -1px;
+}
+
+.period {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: -10px;
+}
+
+.date {
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-top: 6px;
+}
+
+/* ===== Temporizador de sesión ===== */
+.timer-section {
+  margin-bottom: 32px;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+
+body.light .timer-section {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.timer-display {
+  font-family: var(--font-mono);
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 18px;
+  text-shadow: 0 0 20px var(--accent-glow);
+}
+
+.timer-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.timer-settings {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.setting {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.setting input,
+.setting select {
+  width: 110px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+body.light .setting input,
+body.light .setting select {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.setting input:focus,
+.setting select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* ===== Botones ===== */
+.controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--btn-text);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow var(--transition),
+    background var(--transition);
+  outline: none;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 var(--accent-glow);
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 0 0 10px var(--accent-glow);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.06);
+}
+
+.btn-icon {
+  font-size: 1.1rem;
+}
+
+/* ===== Selector de fondos ===== */
+.bg-selector {
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+body.light .bg-selector {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.selector-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.bg-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.bg-option {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.2s ease, border-color var(--transition);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.bg-option:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+}
+
+.bg-option.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+/* ===== Footer ===== */
+.footer {
+  margin-top: 32px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .container {
+    padding: 16px;
+  }
+
+  .clock-card {
+    padding: 32px 20px 28px;
+  }
+
+  .time {
+    font-size: 3.75rem;
+  }
+
+  .timer-display {
+    font-size: 2.25rem;
+  }
+
+  .controls,
+  .timer-controls,
+  .timer-settings {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ===== Movimiento reducido ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
