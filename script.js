@@ -106,6 +106,12 @@ function applyTheme(dark) {
     toggleThemeBtn.setAttribute("aria-pressed", "false");
   }
   localStorage.setItem("reloj_theme", dark ? "dark" : "light");
+
+  // Animación de flip en el emoji del theme toggle
+  toggleThemeBtn.setAttribute("data-state-change", "");
+  toggleThemeBtn.addEventListener("animationend", () => {
+    toggleThemeBtn.removeAttribute("data-state-change");
+  }, { once: true });
 }
 
 toggleThemeBtn.addEventListener("click", () => {
@@ -124,6 +130,7 @@ applyTheme(isDark);
 toggle12Btn.addEventListener("click", () => {
   use24h = !use24h;
   updateClock();
+  triggerEmojiFlip(toggle12Btn);
 });
 
 // ==========================================
@@ -212,6 +219,7 @@ function toggleBgSelector(open) {
 
 toggleBgBtn.addEventListener("click", () => {
   toggleBgSelector(!isBgOpen);
+  triggerEmojiFlip(toggleBgBtn);
 });
 
 closeBgBtn.addEventListener("click", () => {
@@ -379,6 +387,14 @@ timerMinutesInput.addEventListener("change", () => {
 
 // Inicializar temporizador
 resetTimer();
+
+// Helper: animación flip en emoji
+function triggerEmojiFlip(btn) {
+  btn.setAttribute("data-state-change", "");
+  btn.addEventListener("animationend", () => {
+    btn.removeAttribute("data-state-change");
+  }, { once: true });
+}
 
 // ==========================================
 // ENTRADA DEL HERO UNA VEZ (design-taste-frontend rule 5)

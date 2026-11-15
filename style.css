@@ -346,6 +346,47 @@ body.light .setting select {
   border-color: rgba(255, 255, 255, 0.20);
 }
 
+/* Animación emoji en icon-btn (hover) */
+@media (hover: hover) and (pointer: fine) {
+  .icon-btn:hover {
+    transform: scale(1.08);
+  }
+  .icon-btn:hover::after {
+    content: "";
+  }
+}
+
+/* Animación emoji en btn-icon (hover) */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover .btn-icon {
+    transform: scale(1.15) rotate(-5deg);
+  }
+  .btn-primary:hover .btn-icon {
+    transform: scale(1.15) rotate(5deg);
+  }
+}
+
+/* Animación de cambio de estado para theme toggle */
+.icon-btn[data-state-change] {
+  animation: emojiFlip 400ms var(--ease-out);
+}
+
+@keyframes emojiFlip {
+  0% { transform: rotateY(0deg) scale(1); }
+  50% { transform: rotateY(90deg) scale(0.8); }
+  100% { transform: rotateY(0deg) scale(1); }
+}
+
+/* Entrada suave de emojis */
+.btn-icon,
+.icon-btn {
+  animation: emojiEnter 300ms var(--ease-out) backwards;
+}
+
+@keyframes emojiEnter {
+  from { opacity: 0; transform: scale(0.8) translateY(4px); }
+}
+
 /* ---------- Cita ---------- */
 .quote {
   font-size: 1.05rem;
