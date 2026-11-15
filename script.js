@@ -26,6 +26,7 @@ const bgSelector = document.getElementById("bgSelector");
 const bgOptions = document.getElementById("bgOptions");
 const closeBgBtn = document.getElementById("closeBg");
 const bgPreview = document.getElementById("bgPreview");
+const bgCenterBlur = document.getElementById("bgCenterBlur");
 
 let use24h = false;
 let isDark = true;
@@ -141,8 +142,8 @@ function selectBackground(index){
   } else {
     bgLayer.style.backgroundImage = bg.gradient;
   }
-  if (bg.blur) bgLayer.classList.add("bg-blur");
-  else bgLayer.classList.remove("bg-blur");
+  if (bg.blur) { bgLayer.classList.add("bg-blur"); bgCenterBlur.classList.add("active"); }
+  else { bgLayer.classList.remove("bg-blur"); bgCenterBlur.classList.remove("active"); }
   updateBgPreview(bg);
   localStorage.setItem("reloj_bg", index);
   renderBgOptions();
