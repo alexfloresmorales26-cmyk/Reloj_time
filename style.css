@@ -469,8 +469,38 @@ body.light .setting select {
   display: flex;
   gap: 12px;
   justify-content: flex-start;
-  padding-top: 20px;
+  padding: 16px 12px 12px;
   border-top: 1px solid var(--border);
+  background: var(--btn-bg);
+  border-radius: 0 0 24px 24px;
+  margin: 0 -24px -24px;
+  padding-left: 24px;
+}
+
+.icon-btn {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 14px;
+  font-size: 1.35rem;
+  background: var(--btn-bg);
+  border: 1px solid var(--border);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: transform var(--t-press) var(--ease-out),
+    background-color var(--t-ui) var(--ease-out),
+    border-color var(--t-ui) var(--ease-out),
+    box-shadow var(--t-ui) var(--ease-out);
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  background: var(--btn-hover);
+  border-color: rgba(255, 255, 255, 0.30);
+  box-shadow: 0 0 0 6px var(--accent-glow);
 }
 
 /* ---------- Selector de fondos ---------- */
