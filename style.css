@@ -202,23 +202,6 @@ body.light .bg-layer {
   z-index: 2;
 }
 
-.session {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  margin-top: 10px;
-  position: relative;
-  z-index: 2;
-  background: rgba(0, 0, 0, 0.30);
-  padding: 6px 16px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-}
-
-body.light .session {
-  background: rgba(0, 0, 0, 0.08);
-}
-
 @keyframes pulseRing {
   0%, 100% {
     transform: scale(1);

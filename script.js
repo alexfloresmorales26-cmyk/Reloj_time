@@ -11,7 +11,6 @@
 const timeEl = document.getElementById("time");
 const periodEl = document.getElementById("period");
 const dateEl = document.getElementById("date");
-const sessionEl = document.getElementById("session");
 
 // Controles principales
 const toggleThemeBtn = document.getElementById("toggleTheme");
