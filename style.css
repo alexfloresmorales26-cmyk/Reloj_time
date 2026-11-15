@@ -372,7 +372,7 @@ body.light .setting select {
   background: var(--accent);
   color: #ffffff;
   border: none;
-  box-shadow: 0 0 0 0 var(--accent-glow);
+  box-shadow: 0 0 0 0 var(--accent-glow), 0 4px 16px -4px rgba(192, 132, 252, 0.35);
 }
 
 .btn-primary:active {
@@ -381,7 +381,7 @@ body.light .setting select {
 
 .btn-primary:hover {
   background: #b56ee8;
-  box-shadow: 0 0 0 8px var(--accent-glow);
+  box-shadow: 0 0 0 8px var(--accent-glow), 0 8px 32px -4px rgba(192, 132, 252, 0.45);
 }
 
 .icon-btn {
