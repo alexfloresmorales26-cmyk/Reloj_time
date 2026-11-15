@@ -25,6 +25,10 @@ const timerMinutesInput = document.getElementById("timerMinutes");
 const soundSelect = document.getElementById("soundSelect");
 const timerSound = document.getElementById("timerSound");
 
+// Modo Concentración / Descanso
+const modeFocusBtn = document.getElementById("modeFocus");
+const modeBreakBtn = document.getElementById("modeBreak");
+
 // Fondo
 const bgLayer = document.getElementById("bgLayer");
 const bgSelector = document.getElementById("bgSelector");
@@ -40,6 +44,13 @@ let isBgOpen = false;
 let timerSeconds = 0;
 let timerInterval = null;
 let timerRunning = false;
+
+// Modo del temporizador
+let currentMode = "focus"; // "focus" | "break"
+const MODE_DEFAULTS = {
+  focus: 25,  // minutos
+  break: 5,   // minutos
+};
 
 // ==========================================
 // RELOJ
@@ -84,7 +95,7 @@ function updateClock() {
   dateEl.textContent = `${weekday}, ${day} de ${month} de ${year}`;
 }
 
-setInterval(updateClock, 1000);
+let clockInterval = setInterval(updateClock, 1000);
 updateClock();
 
 // ==========================================
@@ -349,6 +360,10 @@ function startTimer() {
   resetTimerBtn.disabled = false;
   timerMinutesInput.disabled = true;
 
+  // Pausar reloj mientras el temporizador corre
+  clearInterval(clockInterval);
+  clockInterval = null;
+
   timerInterval = setInterval(() => {
     if (timerSeconds > 0) {
       timerSeconds--;
@@ -368,20 +383,62 @@ function pauseTimer() {
   timerRunning = false;
   startTimerBtn.disabled = false;
   pauseTimerBtn.disabled = true;
+
+  // Reanudar reloj mientras está pausado
+  if (!clockInterval) {
+    clockInterval = setInterval(updateClock, 1000);
+    updateClock();
+  }
 }
 
 function resetTimer() {
   clearInterval(timerInterval);
   timerInterval = null;
   timerRunning = false;
-  const mins = parseInt(timerMinutesInput.value, 10) || 25;
+  const mins = parseInt(timerMinutesInput.value, 10) || MODE_DEFAULTS[currentMode];
   timerSeconds = mins * 60;
   updateTimerDisplay();
   startTimerBtn.disabled = false;
   pauseTimerBtn.disabled = true;
   resetTimerBtn.disabled = true;
   timerMinutesInput.disabled = false;
+
+  // Reanudar reloj si no estaba corriendo
+  if (!clockInterval) {
+    clockInterval = setInterval(updateClock, 1000);
+    updateClock();
+  }
 }
+
+function setMode(mode) {
+  if (mode === currentMode) return;
+  currentMode = mode;
+
+  // Actualizar botones
+  modeFocusBtn.classList.toggle("active", mode === "focus");
+  modeBreakBtn.classList.toggle("active", mode === "break");
+  modeFocusBtn.setAttribute("aria-pressed", mode === "focus");
+  modeBreakBtn.setAttribute("aria-pressed", mode === "break");
+
+  // Actualizar input de minutos
+  timerMinutesInput.value = MODE_DEFAULTS[mode];
+
+  // Resetear temporizador
+  resetTimer();
+}
+
+// Event listeners para modo
+modeFocusBtn.addEventListener("click", () => setMode("focus"));
+modeBreakBtn.addEventListener("click", () => setMode("break"));
+
+// Cambiar minutos al cambiar modo (solo si no está corriendo)
+timerMinutesInput.addEventListener("change", () => {
+  if (!timerRunning) {
+    const mins = parseInt(timerMinutesInput.value, 10) || MODE_DEFAULTS[currentMode];
+    timerSeconds = mins * 60;
+    updateTimerDisplay();
+  }
+});
 
 function finishTimer() {
   clearInterval(timerInterval);
@@ -411,19 +468,17 @@ function finishTimer() {
   pauseTimerBtn.disabled = true;
   resetTimerBtn.disabled = false;
   timerMinutesInput.disabled = false;
+
+  // Reanudar reloj
+  if (!clockInterval) {
+    clockInterval = setInterval(updateClock, 1000);
+    updateClock();
+  }
 }
 
 startTimerBtn.addEventListener("click", startTimer);
 pauseTimerBtn.addEventListener("click", pauseTimer);
 resetTimerBtn.addEventListener("click", resetTimer);
-
-timerMinutesInput.addEventListener("change", () => {
-  if (!timerRunning) {
-    const mins = parseInt(timerMinutesInput.value, 10) || 25;
-    timerSeconds = mins * 60;
-    updateTimerDisplay();
-  }
-});
 
 // Inicializar temporizador
 resetTimer();

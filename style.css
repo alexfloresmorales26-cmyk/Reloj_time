@@ -282,6 +282,61 @@ body.light .setting select {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
+/* ---------- Mode Toggle (Concentración / Descanso) ---------- */
+.mode-toggle {
+  display: inline-flex;
+  gap: 8px;
+  padding: 6px;
+  background: var(--btn-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 24px;
+}
+
+.mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--t-press) var(--ease-out),
+    background-color var(--t-ui) var(--ease-out),
+    color var(--t-ui) var(--ease-out);
+  outline: none;
+  white-space: nowrap;
+}
+
+.mode-btn:hover {
+  color: var(--text-color);
+  background: var(--btn-hover);
+}
+
+.mode-btn:active {
+  transform: scale(0.97);
+}
+
+.mode-btn.active {
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+.mode-btn.active:hover {
+  background: #b56ee8;
+  color: #ffffff;
+}
+
+.mode-icon {
+  font-size: 1rem;
+}
+
 /* ---------- Botones (Emil Kowalski) ---------- */
 .btn {
   position: relative;
