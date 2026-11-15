@@ -7,84 +7,81 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Fondo dinámico (cambia según el tema seleccionado) -->
+  <!-- Fondo nocturno urbano -->
   <div class="bg-layer" id="bgLayer"></div>
+  <div class="bg-overlay"></div>
 
   <div class="container">
     <header class="header">
-      <h1 class="logo">Reloj_time</h1>
-      <p class="tagline">Tu hora, con estilo</p>
+      <div class="logo">Reloj_time</div>
+      <div class="date" id="date">Lunes, 1 de enero de 2026</div>
     </header>
 
     <main class="clock-card">
-      <!-- Reloj -->
-      <div class="clock-wrapper">
+      <!-- Temporizador principal (estilo Pomodoro) -->
+      <div class="timer-circle">
         <div class="time" id="time">00:00:00</div>
         <div class="period" id="period">AM</div>
-        <div class="date" id="date">Lunes, 1 de enero de 2026</div>
+        <div class="timer-label" id="timerLabel">Sesión de Reloj</div>
       </div>
 
-      <!-- Temporizador de sesión -->
-      <section class="timer-section">
-        <h2 class="section-title">Temporizador de sesión</h2>
-        <div class="timer-display" id="timerDisplay">25:00</div>
-        <div class="timer-controls">
-          <button class="btn btn-primary" id="startTimer">
-            <span class="btn-icon">▶️</span>
-            <span class="btn-label">Iniciar</span>
-          </button>
-          <button class="btn btn-secondary" id="pauseTimer">
-            <span class="btn-icon">⏸️</span>
-            <span class="btn-label">Pausar</span>
-          </button>
-          <button class="btn btn-secondary" id="resetTimer">
-            <span class="btn-icon">🔄</span>
-            <span class="btn-label">Reiniciar</span>
-          </button>
-        </div>
-        <div class="timer-settings">
-          <label class="setting">
-            <span>Minutos</span>
-            <input type="number" id="timerMinutes" min="1" max="120" value="25" />
-          </label>
-          <label class="setting">
-            <span>Sonido</span>
-            <select id="soundSelect">
-              <option value="none">Ninguno</option>
-              <option value="ding">Ding</option>
-              <option value="chime">Chime</option>
-              <option value="bell">Campana</option>
-            </select>
-          </label>
-        </div>
-      </section>
-
-      <!-- Controles principales -->
-      <div class="controls">
-        <button class="btn btn-primary" id="toggle12">
-          <span class="btn-icon">🕒</span>
-          <span class="btn-label">Formato 12/24h</span>
+      <div class="timer-controls">
+        <button class="btn btn-secondary" id="startTimer">
+          <span class="btn-icon">▶️</span>
+          <span class="btn-label">Iniciar sesión</span>
         </button>
-        <button class="btn btn-secondary" id="toggleTheme">
-          <span class="btn-icon">🌙</span>
-          <span class="btn-label">Modo oscuro</span>
+        <button class="btn btn-secondary" id="pauseTimer">
+          <span class="btn-icon">⏸️</span>
+          <span class="btn-label">Pausar</span>
         </button>
-        <button class="btn btn-secondary" id="toggleBg">
-          <span class="btn-icon">🖼️</span>
-          <span class="btn-label">Fondo</span>
+        <button class="btn btn-secondary" id="resetTimer">
+          <span class="btn-icon">🔄</span>
+          <span class="btn-label">Reiniciar</span>
         </button>
       </div>
 
-      <!-- Selector de fondos (oculto por defecto) -->
-      <div class="bg-selector" id="bgSelector">
-        <p class="selector-title">Elige un fondo</p>
-        <div class="bg-options" id="bgOptions"></div>
+      <div class="timer-settings">
+        <label class="setting">
+          <span>Minutos</span>
+          <input type="number" id="timerMinutes" min="1" max="120" value="25" />
+        </label>
+        <label class="setting">
+          <span>Sonido</span>
+          <select id="soundSelect">
+            <option value="none">Ninguno</option>
+            <option value="ding">Ding</option>
+            <option value="chime">Chime</option>
+            <option value="bell">Campana</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="motivational-quote" id="quote">
+        «La motivación te pone en marcha; el hábito te mantiene en marcha.»
+      </div>
+
+      <!-- Controles inferiores -->
+      <div class="bottom-controls">
+        <button class="btn-icon-only" id="toggleTheme" title="Modo claro/oscuro">
+          🌙
+        </button>
+        <button class="btn-icon-only" id="toggle12" title="Formato 12/24h">
+          🕒
+        </button>
+        <button class="btn-icon-only" id="toggleBg" title="Cambiar fondo">
+          🖼️
+        </button>
       </div>
     </main>
 
-    <footer class="footer">
-      <p>&copy; 2026 Reloj_time. Construido con ❤️</p>
-    </footer>
+    <!-- Selector de fondos -->
+    <div class="bg-selector" id="bgSelector">
+      <div class="selector-header">
+        <span>Fondo</span>
+        <button class="close-selector" id="closeBg">✕</button>
+      </div>
+      <div class="bg-options" id="bgOptions"></div>
+    </div>
   </div>
 
   <audio id="timerSound" preload="auto"></audio>

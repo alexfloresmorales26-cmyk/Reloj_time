@@ -1,50 +1,39 @@
 /* ========================================
    Reloj Digital - Reloj_time
-   Estilo inspirado en pomodorotimer.online
-   Fondos traseros dinámicos + temporizador de sesión + sonido
+   Estilo inspirado en Pomodoro Timer
+   Círculo luminoso, fondo nocturno, números grandes
    ======================================== */
 
 :root {
-  /* Colores por defecto (modo oscuro) */
-  --bg-color: #0f172a;
-  --card-bg: rgba(30, 41, 59, 0.55);
-  --text-color: #f8fafc;
-  --text-muted: #94a3b8;
-  --accent: #38bdf8;
-  --accent-hover: #0ea5e9;
-  --accent-glow: rgba(56, 189, 248, 0.35);
-  --btn-text: #ffffff;
+  --bg-color: #0a0b14;
+  --card-bg: rgba(15, 18, 28, 0.6);
+  --text-color: #ffffff;
+  --text-muted: #a0a8b8;
+  --accent: #c084fc;
+  --accent-glow: rgba(192, 132, 252, 0.5);
+  --btn-bg: rgba(255, 255, 255, 0.1);
+  --btn-hover: rgba(255, 255, 255, 0.18);
   --border: rgba(255, 255, 255, 0.08);
-  --shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
-  --transition: 0.35s ease;
+  --shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.7);
+  --transition: 0.4s ease;
   --font-main: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
-
-  /* Fondos traseros (se sobrescriben por JS) */
-  --bg-gradient: radial-gradient(
-    800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(56, 189, 248, 0.12),
-    transparent 40%
-  );
-  --bg-image: none;
 }
 
-/* ===== Modo claro ===== */
 body.light {
-  --bg-color: #f1f5f9;
-  --card-bg: rgba(255, 255, 255, 0.65);
+  --bg-color: #f3f4f6;
+  --card-bg: rgba(255, 255, 255, 0.7);
   --text-color: #0f172a;
   --text-muted: #64748b;
-  --accent: #0ea5e9;
-  --accent-hover: #0284c7;
-  --accent-glow: rgba(14, 165, 233, 0.25);
-  --btn-text: #ffffff;
-  --border: rgba(255, 255, 255, 0.5);
-  --shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.08);
+  --accent: #8b5cf6;
+  --accent-glow: rgba(139, 92, 246, 0.3);
+  --btn-bg: rgba(0, 0, 0, 0.06);
+  --btn-hover: rgba(0, 0, 0, 0.12);
+  --border: rgba(0, 0, 0, 0.08);
+  --shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== Base ===== */
 * {
   margin: 0;
   padding: 0;
@@ -67,7 +56,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Capa de fondo dinámico (imagen + gradiente) */
+/* Capa de fondo nocturno */
 .bg-layer {
   position: fixed;
   inset: 0;
@@ -76,69 +65,97 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: background 0.6s ease, filter var(--transition);
-  filter: brightness(0.9) saturate(1.1);
+  transition: background 0.8s ease, filter var(--transition);
+  filter: brightness(0.7) saturate(1.1);
 }
 
 body.light .bg-layer {
-  filter: brightness(1.05) saturate(0.95);
+  filter: brightness(0.95) saturate(0.9);
 }
 
-/* ===== Contenedor ===== */
+.bg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    900px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(192, 132, 252, 0.10),
+    transparent 45%
+  );
+  transition: background 0.4s ease;
+}
+
+/* Contenedor */
 .container {
   width: 100%;
-  max-width: 440px;
-  padding: 24px;
+  max-width: 700px;
+  padding: 40px 24px;
   text-align: center;
   position: relative;
   z-index: 1;
 }
 
 .header {
-  margin-bottom: 36px;
+  margin-bottom: 20px;
 }
 
 .logo {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   letter-spacing: -0.5px;
   color: var(--text-color);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
-.tagline {
-  font-size: 0.875rem;
+.date {
+  font-size: 0.95rem;
   color: var(--text-muted);
   font-weight: 400;
 }
 
-/* ===== Tarjeta principal ===== */
+/* Tarjeta principal */
 .clock-card {
   position: relative;
   background: var(--card-bg);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border);
-  border-radius: 28px;
-  padding: 40px 28px 36px;
+  border-radius: 40px;
+  padding: 60px 40px 50px;
   box-shadow: var(--shadow);
-  transition: transform var(--transition), box-shadow var(--transition),
-    border-color var(--transition);
+  transition: transform var(--transition), box-shadow var(--transition);
 }
 
 .clock-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 28px 70px -14px rgba(0, 0, 0, 0.65);
-  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 35px 90px -18px rgba(0, 0, 0, 0.8);
 }
 
-/* ===== Reloj ===== */
-.clock-wrapper {
+/* Círculo del temporizador (estilo Pomodoro) */
+.timer-circle {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  margin: 0 auto 32px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 36px;
+  justify-content: center;
+}
+
+.timer-ring {
+  position: absolute;
+  inset: 0;
+  border: 3px solid rgba(192, 132, 252, 0.25);
+  border-radius: 50%;
+  box-shadow: 0 0 40px rgba(192, 132, 252, 0.25);
+  animation: pulseRing 3s ease-in-out infinite;
+}
+
+.timer-ring-inner {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(192, 132, 252, 0.12);
+  border-radius: 50%;
 }
 
 .time {
@@ -147,71 +164,61 @@ body.light .bg-layer {
   font-weight: 700;
   line-height: 1;
   color: var(--text-color);
-  text-shadow: 0 0 28px var(--accent-glow);
+  text-shadow: 0 0 30px var(--accent-glow);
   letter-spacing: -1px;
+  position: relative;
+  z-index: 2;
 }
 
 .period {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: var(--accent);
-  margin-top: -10px;
+  margin-top: -6px;
+  position: relative;
+  z-index: 2;
 }
 
-.date {
-  font-size: 1rem;
-  color: var(--text-muted);
-  font-weight: 400;
-  margin-top: 6px;
-}
-
-/* ===== Temporizador de sesión ===== */
-.timer-section {
-  margin-bottom: 32px;
-  padding: 24px;
-  background: rgba(0, 0, 0, 0.15);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-}
-
-body.light .timer-section {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.section-title {
+.timer-label {
   font-size: 0.9rem;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  margin-top: 10px;
+  position: relative;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
 }
 
-.timer-display {
-  font-family: var(--font-mono);
-  font-size: 2.75rem;
-  font-weight: 700;
-  color: var(--text-color);
-  margin-bottom: 18px;
-  text-shadow: 0 0 20px var(--accent-glow);
+@keyframes pulseRing {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+    box-shadow: 0 0 40px rgba(192, 132, 252, 0.25);
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+    box-shadow: 0 0 60px rgba(192, 132, 252, 0.45);
+  }
 }
 
+/* Controles del temporizador */
 .timer-controls {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
 
 .timer-settings {
   display: flex;
-  gap: 14px;
+  gap: 18px;
   justify-content: center;
+  margin-bottom: 32px;
   flex-wrap: wrap;
 }
 
@@ -223,13 +230,14 @@ body.light .timer-section {
   font-size: 0.8rem;
   color: var(--text-muted);
   font-weight: 500;
+  text-align: left;
 }
 
 .setting input,
 .setting select {
-  width: 110px;
-  padding: 8px 12px;
-  border-radius: 10px;
+  width: 120px;
+  padding: 10px 14px;
+  border-radius: 12px;
   border: 1px solid var(--border);
   background: rgba(0, 0, 0, 0.2);
   color: var(--text-color);
@@ -250,33 +258,25 @@ body.light .setting select {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-/* ===== Botones ===== */
-.controls {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
-}
-
+/* Botones */
 .btn {
   position: relative;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 20px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   font-family: inherit;
   font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--btn-text);
+  font-weight: 600;
+  color: var(--text-color);
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow var(--transition),
     background var(--transition);
   outline: none;
-  background: var(--accent);
-  box-shadow: 0 0 0 0 var(--accent-glow);
+  background: var(--btn-bg);
+  border: 1px solid var(--border);
 }
 
 .btn:active {
@@ -284,78 +284,118 @@ body.light .setting select {
 }
 
 .btn:hover {
-  background: var(--accent-hover);
-  box-shadow: 0 0 0 10px var(--accent-glow);
+  background: var(--btn-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 6px var(--accent-glow);
 }
 
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-color);
-  border: 1px solid var(--border);
-}
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.06);
+.btn-icon-only {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  justify-content: center;
+  font-size: 1.25rem;
 }
 
 .btn-icon {
   font-size: 1.1rem;
 }
 
-/* ===== Selector de fondos ===== */
+/* Cita motivacional */
+.motivational-quote {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+/* Controles inferiores */
+.bottom-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+/* Selector de fondos */
 .bg-selector {
-  margin-top: 24px;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--border);
-  border-radius: 20px;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
   display: none;
+  align-items: center;
+  justify-content: center;
   animation: fadeIn 0.3s ease;
 }
 
 body.light .bg-selector {
-  background: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.selector-title {
-  font-size: 0.85rem;
-  font-weight: 700;
+.selector-panel {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.selector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.selector-header span {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 1.1rem;
+}
+
+.close-selector {
+  background: none;
+  border: none;
   color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 12px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.close-selector:hover {
+  color: var(--text-color);
 }
 
 .bg-options {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 14px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .bg-option {
   width: 64px;
   height: 64px;
-  border-radius: 14px;
-  border: 2px solid transparent;
+  border-radius: 16px;
+  border: 3px solid transparent;
   cursor: pointer;
   background-size: cover;
   background-position: center;
   transition: transform 0.2s ease, border-color var(--transition);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 .bg-option:hover {
@@ -365,40 +405,49 @@ body.light .bg-selector {
 
 .bg-option.active {
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-glow);
+  box-shadow: 0 0 0 6px var(--accent-glow);
 }
 
-/* ===== Footer ===== */
-.footer {
-  margin-top: 32px;
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+/* Flash al terminar temporizador */
+.timer-flash {
+  animation: timerFlash 0.5s ease;
 }
 
-/* ===== Responsive ===== */
-@media (max-width: 480px) {
+@keyframes timerFlash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
   .container {
-    padding: 16px;
+    padding: 24px 16px;
   }
 
   .clock-card {
-    padding: 32px 20px 28px;
+    padding: 40px 24px 32px;
+    border-radius: 28px;
+  }
+
+  .timer-circle {
+    width: 260px;
+    height: 260px;
+    margin-bottom: 24px;
   }
 
   .time {
     font-size: 3.75rem;
   }
 
-  .timer-display {
-    font-size: 2.25rem;
-  }
-
-  .controls,
   .timer-controls,
   .timer-settings {
     flex-direction: column;
+    align-items: center;
+  }
+
+  .setting input,
+  .setting select {
+    width: 140px;
   }
 
   .btn {
@@ -407,7 +456,6 @@ body.light .bg-selector {
   }
 }
 
-/* ===== Movimiento reducido ===== */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

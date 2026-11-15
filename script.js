@@ -1,24 +1,25 @@
 /* ========================================
    Reloj Digital - Reloj_time
-   Lógica funcional:
+   Estilo Pomodoro Timer
    - Reloj en tiempo real (12/24h)
-   - Modo claro/oscuro con persistencia
-   - Temporizador de sesión con sonido al terminar
+   - Temporizador de sesión con sonido
    - Fondos traseros dinámicos
+   - Modo claro/oscuro con persistencia
    ======================================== */
 
 // Elementos del reloj
 const timeEl = document.getElementById("time");
 const periodEl = document.getElementById("period");
 const dateEl = document.getElementById("date");
+const timerLabelEl = document.getElementById("timerLabel");
 
-// Elementos de controles principales
-const toggle12Btn = document.getElementById("toggle12");
+// Controles principales
 const toggleThemeBtn = document.getElementById("toggleTheme");
+const toggle12Btn = document.getElementById("toggle12");
 const toggleBgBtn = document.getElementById("toggleBg");
 
-// Elementos del temporizador
-const timerDisplay = document.getElementById("timerDisplay");
+// Temporizador
+const timerDisplay = document.getElementById("timerDisplay") || timeEl;
 const startTimerBtn = document.getElementById("startTimer");
 const pauseTimerBtn = document.getElementById("pauseTimer");
 const resetTimerBtn = document.getElementById("resetTimer");
@@ -26,21 +27,21 @@ const timerMinutesInput = document.getElementById("timerMinutes");
 const soundSelect = document.getElementById("soundSelect");
 const timerSound = document.getElementById("timerSound");
 
-// Selector de fondos
+// Fondo
+const bgLayer = document.getElementById("bgLayer");
 const bgSelector = document.getElementById("bgSelector");
 const bgOptions = document.getElementById("bgOptions");
-const bgLayer = document.getElementById("bgLayer");
+const closeBgBtn = document.getElementById("closeBg");
 
 // Estado
 let use24h = false;
 let isDark = true;
-let isBgSelectorOpen = false;
+let isBgOpen = false;
 
 // Estado del temporizador
 let timerSeconds = 0;
 let timerInterval = null;
 let timerRunning = false;
-let timerPaused = false;
 
 // ==========================================
 // RELOJ
@@ -96,13 +97,13 @@ function applyTheme(dark) {
   if (dark) {
     document.body.classList.remove("light");
     document.body.classList.add("dark");
-    toggleThemeBtn.querySelector(".btn-icon").textContent = "☀️";
-    toggleThemeBtn.querySelector(".btn-label").textContent = "Modo claro";
+    toggleThemeBtn.textContent = "☀️";
+    toggleThemeBtn.title = "Modo claro";
   } else {
     document.body.classList.remove("dark");
     document.body.classList.add("light");
-    toggleThemeBtn.querySelector(".btn-icon").textContent = "🌙";
-    toggleThemeBtn.querySelector(".btn-label").textContent = "Modo oscuro";
+    toggleThemeBtn.textContent = "🌙";
+    toggleThemeBtn.title = "Modo oscuro";
   }
   localStorage.setItem("reloj_theme", dark ? "dark" : "light");
 }
@@ -113,11 +114,7 @@ toggleThemeBtn.addEventListener("click", () => {
 });
 
 const savedTheme = localStorage.getItem("reloj_theme");
-if (savedTheme !== null) {
-  isDark = savedTheme === "dark";
-} else {
-  isDark = true;
-}
+isDark = savedTheme !== null ? savedTheme === "dark" : true;
 applyTheme(isDark);
 
 // ==========================================
@@ -135,39 +132,46 @@ toggle12Btn.addEventListener("click", () => {
 
 const backgrounds = [
   {
+    id: "bg-urbano",
+    name: "Urbano Nocturno",
+    image: "assets/backgrounds/bg-urbano.png",
+    gradient:
+      "radial-gradient(900px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(192, 132, 252, 0.10), transparent 45%)",
+  },
+  {
     id: "bg-azul",
-    name: "Azul profundo",
+    name: "Azul Profundo",
     image: "assets/backgrounds/bg-azul.png",
     gradient:
-      "radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.14), transparent 40%)",
+      "radial-gradient(900px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.10), transparent 45%)",
   },
   {
     id: "bg-purpura",
     name: "Púrpura",
     image: "assets/backgrounds/bg-purpura.png",
     gradient:
-      "radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(168, 85, 247, 0.14), transparent 40%)",
+      "radial-gradient(900px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(168, 85, 247, 0.10), transparent 45%)",
   },
   {
     id: "bg-verde",
     name: "Esmeralda",
     image: "assets/backgrounds/bg-verde.png",
     gradient:
-      "radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(16, 185, 129, 0.14), transparent 40%)",
+      "radial-gradient(900px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(16, 185, 129, 0.10), transparent 45%)",
   },
   {
     id: "bg-naranja",
     name: "Ámbar",
     image: "assets/backgrounds/bg-naranja.png",
     gradient:
-      "radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(245, 158, 11, 0.14), transparent 40%)",
+      "radial-gradient(900px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(245, 158, 11, 0.10), transparent 45%)",
   },
   {
     id: "bg-rosa",
     name: "Rosa",
     image: "assets/backgrounds/bg-rosa.png",
     gradient:
-      "radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(236, 72, 153, 0.14), transparent 40%)",
+      "radial-gradient(900px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(236, 72, 153, 0.10), transparent 45%)",
   },
 ];
 
@@ -189,7 +193,6 @@ function selectBackground(index) {
   currentBgIndex = index;
   const bg = backgrounds[index];
 
-  // Aplicar fondo: imagen + gradiente dinámico
   if (bg.image) {
     bgLayer.style.backgroundImage = `url(${bg.image}), ${bg.gradient}`;
   } else {
@@ -202,19 +205,32 @@ function selectBackground(index) {
 }
 
 function toggleBgSelector(open) {
-  isBgSelectorOpen = open;
-  bgSelector.style.display = open ? "block" : "none";
+  isBgOpen = open;
+  bgSelector.style.display = open ? "flex" : "none";
 }
 
 toggleBgBtn.addEventListener("click", () => {
-  toggleBgSelector(!isBgSelectorOpen);
+  toggleBgSelector(!isBgOpen);
+});
+
+closeBgBtn.addEventListener("click", () => {
+  toggleBgSelector(false);
+});
+
+// Cerrar al hacer clic fuera del panel
+bgSelector.addEventListener("click", (e) => {
+  if (e.target === bgSelector) toggleBgSelector(false);
 });
 
 // Cargar fondo guardado
 const savedBg = localStorage.getItem("reloj_bg");
 if (savedBg !== null) {
   currentBgIndex = parseInt(savedBg, 10);
-  if (isNaN(currentBgIndex) || currentBgIndex < 0 || currentBgIndex >= backgrounds.length) {
+  if (
+    isNaN(currentBgIndex) ||
+    currentBgIndex < 0 ||
+    currentBgIndex >= backgrounds.length
+  ) {
     currentBgIndex = 0;
   }
 } else {
@@ -263,7 +279,7 @@ function playSound(name) {
     timerSound.src = src;
     timerSound.currentTime = 0;
     timerSound.play().catch(() => {
-      // El navegador puede bloquear autoplay sin interacción previa
+      // Navegador puede bloquear autoplay sin interacción previa
     });
   } catch (err) {
     console.warn("No se pudo reproducir el sonido:", err);
@@ -273,14 +289,12 @@ function playSound(name) {
 function startTimer() {
   if (timerRunning) return;
 
-  // Si no hay tiempo cargado, usar el valor del input
   if (timerSeconds === 0) {
     const mins = parseInt(timerMinutesInput.value, 10) || 25;
     timerSeconds = mins * 60;
   }
 
   timerRunning = true;
-  timerPaused = false;
   startTimerBtn.disabled = true;
   pauseTimerBtn.disabled = false;
   resetTimerBtn.disabled = false;
@@ -303,18 +317,14 @@ function pauseTimer() {
   clearInterval(timerInterval);
   timerInterval = null;
   timerRunning = false;
-  timerPaused = true;
   startTimerBtn.disabled = false;
   pauseTimerBtn.disabled = true;
-  startTimerBtn.querySelector(".btn-icon").textContent = "▶️";
-  startTimerBtn.querySelector(".btn-label").textContent = "Reanudar";
 }
 
 function resetTimer() {
   clearInterval(timerInterval);
   timerInterval = null;
   timerRunning = false;
-  timerPaused = false;
   const mins = parseInt(timerMinutesInput.value, 10) || 25;
   timerSeconds = mins * 60;
   updateTimerDisplay();
@@ -322,8 +332,6 @@ function resetTimer() {
   pauseTimerBtn.disabled = true;
   resetTimerBtn.disabled = true;
   timerMinutesInput.disabled = false;
-  startTimerBtn.querySelector(".btn-icon").textContent = "▶️";
-  startTimerBtn.querySelector(".btn-label").textContent = "Iniciar";
 }
 
 function finishTimer() {
@@ -333,19 +341,18 @@ function finishTimer() {
   timerSeconds = 0;
   updateTimerDisplay();
 
-  // Reproducir sonido al terminar la sesión
+  // Sonido al terminar la sesión
   const selectedSound = soundSelect.value;
   playSound(selectedSound);
 
-  // Notificación visual
-  timerDisplay.classList.add("flash");
-  setTimeout(() => timerDisplay.classList.remove("flash"), 600);
+  // Efecto visual flash
+  timerDisplay.classList.add("timer-flash");
+  setTimeout(() => timerDisplay.classList.remove("timer-flash"), 500);
 
-  // Alerta nativa (opcional)
+  // Notificación del navegador
   try {
     new Notification("Reloj_time", {
       body: "Tu sesión ha terminado.",
-      icon: null,
     });
   } catch (err) {
     // Notificaciones no soportadas o bloqueadas
@@ -355,8 +362,6 @@ function finishTimer() {
   pauseTimerBtn.disabled = true;
   resetTimerBtn.disabled = false;
   timerMinutesInput.disabled = false;
-  startTimerBtn.querySelector(".btn-icon").textContent = "▶️";
-  startTimerBtn.querySelector(".btn-label").textContent = "Iniciar";
 }
 
 startTimerBtn.addEventListener("click", startTimer);
