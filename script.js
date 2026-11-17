@@ -33,6 +33,7 @@ const bgOptions = document.getElementById("bgOptions");
 const closeBgBtn = document.getElementById("closeBg");
 const bgPreview = document.getElementById("bgPreview");
 const pageWrap = document.querySelector(".wrap");
+const skipLink = document.querySelector(".skip-link");
 
 const BASE_TITLE = "Reloj_time — Reloj digital y temporizador";
 const MODE_DEFAULTS = { focus: 25, break: 5 };
@@ -212,6 +213,10 @@ toggleThemeBtn.addEventListener("click", () => {
   applyTheme(!isDark);
 });
 
+toggle12Btn.addEventListener("click", () => {
+  setUse24(!use24h);
+});
+
 /* ---------- Temporizador ---------- */
 function renderTimer() {
   timeEl.textContent = formatTimer(timerRemaining);
@@ -375,6 +380,7 @@ function finishTimer() {
 }
 
 function tick() {
+  updateDateFormat(new Date());
   if (timerState !== "running") return;
 
   const remaining = Math.max(
@@ -621,10 +627,10 @@ function selectBackground(index, { persist = true, close = true } = {}) {
   const background = BACKGROUNDS[index];
   const layers = [];
 
-  if (background.image) layers.push(`url("${background.image}")`);
   if (background.gradient && background.gradient !== "none") {
     layers.push(background.gradient);
   }
+  if (background.image) layers.push(`url("${background.image}")`);
   bgLayer.style.backgroundImage = layers.length ? layers.join(", ") : "none";
 
   updateBgPreview(background);
@@ -644,6 +650,7 @@ function toggleBgSelector(open) {
     bgSelector.hidden = false;
     document.body.classList.add("no-scroll");
     pageWrap.inert = true;
+    if (skipLink) skipLink.inert = true;
 
     const activeOption = bgOptions.querySelector(".bg-option.active");
     (activeOption || closeBgBtn).focus({ preventScroll: true });
@@ -651,6 +658,7 @@ function toggleBgSelector(open) {
     bgSelector.hidden = true;
     document.body.classList.remove("no-scroll");
     pageWrap.inert = false;
+    if (skipLink) skipLink.inert = false;
 
     if (lastFocusedElement && lastFocusedElement.focus) {
       lastFocusedElement.focus({ preventScroll: true });
@@ -755,7 +763,11 @@ document.addEventListener("keydown", (event) => {
 /* ---------- Ciclo de vida ---------- */
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) return;
-  if (timerState === "running") tick();
+  if (timerState === "running") {
+    tick();
+  } else {
+    updateDateFormat(new Date());
+  }
   if (timerState === "idle") updateClock();
 });
 
@@ -782,4 +794,5 @@ if (savedBg !== null) {
 
 renderBgOptions();
 selectBackground(currentBgIndex, { persist: false, close: false });
+timerMinutesInput.value = MODE_DEFAULTS[currentMode];
 resetTimer();
