@@ -99,7 +99,7 @@ También puedes hacer doble clic en `index.html`.
 | `B` | Abrir selector de fondos |
 | `Esc` | Cerrar el selector de fondos |
 
-> Los atajos se ignoran mientras escribes en un campo, con `Ctrl`/`Alt`/`Meta` o con repetición automática. Con el selector abierto, los atajos globales se desactivan y solo se gestionan `Esc` y `Tab`; `B` abre el selector y `Esc` lo cierra. Tras finalizar, `Espacio` inicia una nueva sesión si el foco no está en un control.
+> Los atajos se ignoran mientras escribes en un campo, con `Ctrl`/`Alt`/`Meta` o con repetición automática. Con el selector cerrado, `B` lo abre; con el selector abierto, los atajos globales se desactivan y solo se gestionan `Esc` (cierra) y `Tab` (mantiene el foco dentro). Tras finalizar, `Espacio` inicia una nueva sesión si el foco no está en un control.
 
 ## Estructura del proyecto
 
@@ -113,10 +113,12 @@ Reloj digital/
 │   ├── favicon.svg
 │   ├── screenshot.webp
 │   ├── backgrounds/    # 10 fondos + thumbs/ (10 miniaturas WebP)
-│   ├── source/         # 4 originales PNG 4K (no se sirven)
+│   ├── source/         # 4 originales PNG 4K (no usados por la app)
 │   └── sounds/         # ding.wav, chime.wav, bell.wav
 └── README.md
 ```
+
+La app no carga `assets/source/`, pero un servidor estático sí lo publica. Si despliegas el sitio, exclúyelo del artefacto: no es necesario en producción y pesa ~22,7 MB.
 
 ## Personalización
 
@@ -130,7 +132,7 @@ const MODE_DEFAULTS = {
 };
 ```
 
-Al recargar, el campo de minutos toma el valor del modo activo. Si el campo queda vacío o recibe un valor inválido, se normaliza al valor por defecto; el rango se recorta a 1–120.
+Al recargar, el campo de minutos toma el valor del modo inicial (Concentración). Si el campo queda vacío o recibe un valor inválido, se normaliza al valor por defecto; el rango se recorta a 1–120.
 
 ### Agregar más fondos
 1. Optimiza la imagen completa a WebP y guárdala en `assets/backgrounds/` (o usa un PNG si es un degradado ligero).
@@ -169,6 +171,15 @@ En `style.css`, sección `:root` (tema oscuro) y `:root.light` (tema claro):
   --muted: #b6bccd;
   /* ... */
 }
+
+:root.light {
+  --accent: #6d28d9;
+  --accent-fill: #6d28d9;
+  --bg-color: #edf0f6;
+  --text: #111426;
+  --muted: #525a70;
+  /* ... */
+}
 ```
 
 ### Evitar caché antigua
@@ -179,5 +190,9 @@ Si editas `style.css` o `script.js`, sube el número de `?v=10` en `index.html` 
 - Sin dependencias, sin build step.
 - Fuentes del sistema (`ui-monospace`, `Segoe UI`, etc.).
 
+## Créditos y assets
+
+El código y la documentación están bajo la licencia MIT. Los cuatro fondos de imagen (`bg-wallhaven-*.png` y sus WebP) y los sonidos de `assets/sounds/` se incluyen como material de ejemplo y no están cubiertos por la MIT. Verifica su procedencia y condiciones antes de redistribuirlos o publicarlos.
+
 ## Licencia
-MIT — consulta [`LICENSE`](LICENSE). La licencia cubre el código; las imágenes y los sonidos incluidos pueden tener sus propias condiciones de uso.
+MIT — consulta [`LICENSE`](LICENSE).
